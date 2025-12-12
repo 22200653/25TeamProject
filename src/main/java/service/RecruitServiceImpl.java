@@ -1,19 +1,26 @@
 package service;
 
 import java.util.List;
-import dao.RecruitDao;
-import model.Recruit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import model.Recruit;
+import repository.RecruitRepository;
+
+@Service
 public class RecruitServiceImpl implements RecruitService {
-    private final RecruitDao recruitDao = new RecruitDao();
+
+    @Autowired
+    private RecruitRepository repo;
 
     @Override
     public List<Recruit> list() {
-        return recruitDao.findAll();
+        return repo.findAll();
     }
 
     @Override
     public Recruit detail(int id) {
-        return recruitDao.findById(id);
+        return repo.findById(id);
     }
 }

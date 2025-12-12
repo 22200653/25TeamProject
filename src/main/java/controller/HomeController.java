@@ -1,21 +1,21 @@
 package controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import service.RecruitService;
-import service.RecruitServiceImpl;
 
-import javax.servlet.*;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+@Controller
+public class HomeController {
 
-import java.io.IOException;
+    @Autowired
+    private RecruitService recruitService;
 
-@WebServlet("/home")
-public class HomeController extends HttpServlet {
-    private final RecruitService recruitService = new RecruitServiceImpl();
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("recruits", recruitService.list());
-        req.getRequestDispatcher("/WEB-INF/views/home.jsp").forward(req, resp);
+    @GetMapping({"/", "/home"})
+    public String home(Model model) {
+        model.addAttribute("recruits", recruitService.list());
+        return "home"; // /WEB-INF/views/home.jsp
     }
 }

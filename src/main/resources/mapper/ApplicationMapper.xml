@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.clublist.mapper.ApplicationMapper">
+<mapper namespace="mapper.ApplicationMapper">
 
     <select id="findByRecruitId" parameterType="int" resultType="Application">
         SELECT id, recruit_id, name, grade, major, message, created_at

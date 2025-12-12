@@ -1,25 +1,29 @@
 package controller;
 
-import service.*;
-import javax.servlet.*;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import service.ApplicationService;
+import service.RecruitService;
 
-import java.io.IOException;
+@Controller
+@RequestMapping("/recruit")
+public class RecruitController {
 
-@WebServlet("/recruit/detail")
-public class RecruitController extends HttpServlet {
-    private final RecruitService recruitService = new RecruitServiceImpl();
-    private final ApplicationService appService = new ApplicationServiceImpl();
+    @Autowired
+    private RecruitService recruitService;
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int recruitId = Integer.parseInt(req.getParameter("id"));
+    @Autowired
+    private ApplicationService applicationService;
 
-        req.setAttribute("recruit", recruitService.detail(recruitId));
-        req.setAttribute("apps", appService.listByRecruit(recruitId));
-
-        req.getRequestDispatcher("/WEB-INF/views/recruit/detail.jsp").forward(req, resp);
+    @GetMapping("/detail")
+    public String detail(@RequestParam("id") int id, Model model) {
+        model.addAttribute("recruit", recruitService.detail(id));
+        model.addAttribute("applications", applicationService.listByRecruitId(id));
+        return "recruit/detail"; // /WEB-INF/views/recruit/detail.jsp
     }
 }

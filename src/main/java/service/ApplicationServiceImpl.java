@@ -1,34 +1,41 @@
 package service;
 
 import java.util.List;
-import dao.ApplicationDao;
-import model.Application;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import model.Application;
+import repository.ApplicationRepository;
+
+@Service
 public class ApplicationServiceImpl implements ApplicationService {
-    private final ApplicationDao applicationDao = new ApplicationDao();
+
+    @Autowired
+    private ApplicationRepository repo;
 
     @Override
-    public List<Application> listByRecruit(int recruitId) {
-        return applicationDao.findByRecruitId(recruitId);
+    public List<Application> listByRecruitId(int recruitId) {
+        return repo.findByRecruitId(recruitId);
     }
 
     @Override
     public Application detail(int id) {
-        return applicationDao.findById(id);
+        return repo.findById(id);
     }
 
     @Override
     public void create(Application app) {
-        applicationDao.insert(app);
+        repo.insert(app);
     }
 
     @Override
     public void edit(Application app) {
-        applicationDao.update(app);
+        repo.update(app);
     }
 
     @Override
     public void remove(int id) {
-        applicationDao.delete(id);
+        repo.delete(id);
     }
 }
