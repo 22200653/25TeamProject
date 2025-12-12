@@ -1,0 +1,4 @@
+db.driver=org.mariadb.jdbc.Driver
+db.url=jdbc:mariadb://walab.handong.edu:3306/DBNAME
+db.username=YOUR_USERNAME
+db.password=YOUR_PASSWORD
