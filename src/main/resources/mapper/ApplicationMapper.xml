@@ -5,18 +5,34 @@
 
 <mapper namespace="mapper.ApplicationMapper">
 
-    <select id="findByRecruitId" parameterType="int" resultType="Application">
-        SELECT id, recruit_id, name, grade, major, message, created_at
+    <select id="findByRecruitId" parameterType="int" resultType="model.Application">
+        SELECT
+        id,
+        recruit_id AS recruitId,
+        name,
+        grade,
+        major,
+        message,
+        created_at AS createdAt
         FROM application
         WHERE recruit_id = #{recruitId}
         ORDER BY id DESC
     </select>
 
-    <select id="findById" parameterType="int" resultType="Application">
-        SELECT id, recruit_id, name, grade, major, message, created_at
+
+    <select id="findById" parameterType="int" resultType="model.Application">
+        SELECT
+        id,
+        recruit_id AS recruitId,
+        name,
+        grade,
+        major,
+        message,
+        created_at AS createdAt
         FROM application
         WHERE id = #{id}
     </select>
+
 
     <insert id="insert" parameterType="Application" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO application (recruit_id, name, grade, major, message)

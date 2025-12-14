@@ -23,7 +23,7 @@ public class RecruitController {
     @GetMapping("/detail")
     public String detail(@RequestParam("id") int id, Model model) {
         model.addAttribute("recruit", recruitService.detail(id));
-        model.addAttribute("applications", applicationService.listByRecruitId(id));
-        return "recruit/detail"; // /WEB-INF/views/recruit/detail.jsp
+        model.addAttribute("apps", applicationService.listByRecruitId(id));
+        return "recruit/detail";
     }
 }

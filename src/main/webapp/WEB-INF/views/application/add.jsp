@@ -9,7 +9,7 @@
 <h2>지원서 추가</h2>
 
 <form action="${pageContext.request.contextPath}/application/create" method="post">
-    <input type="hidden" name="recruitId" value="${param.recruitId}"/>
+    <input type="hidden" name="recruitId" value="${recruitId}"/>
 
     이름: <input name="name" required/><br/><br/>
     학년: <input name="grade" type="number"/><br/><br/>
