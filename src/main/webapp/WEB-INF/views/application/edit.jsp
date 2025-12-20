@@ -3,24 +3,225 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8"/>
-    <title>지원서 수정</title>
+    <title>지원서 작성</title>
+    <style>
+        :root{
+            --bg:#f5f6f7;
+            --text:#111;
+            --muted:#777;
+            --line:#e9ecef;
+            --card:#fff;
+            --primary:#2da8ff;
+            --primary-soft:#e8f6ff;
+        }
+        *{ box-sizing:border-box; }
+        body{
+            margin:0;
+            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+            background:var(--bg);
+            color:var(--text);
+        }
+        a{ color:inherit; text-decoration:none; }
+
+        .header{ background:#fff; border-bottom:1px solid var(--line); }
+        .header-inner{
+            width:1020px; max-width:calc(100% - 32px);
+            margin:0 auto;
+            display:flex; align-items:center; justify-content:space-between;
+            padding:18px 0;
+        }
+        .brand{ display:flex; align-items:center; gap:12px; font-weight:800; font-size:20px; cursor:pointer; }
+        .brand .logo{
+            width:34px; height:34px; border-radius:50%;
+            background: radial-gradient(circle at 30% 30%, #9be1ff, #2da8ff);
+        }
+        .brand-text{ display:flex; flex-direction:column; line-height:1.1; }
+        .brand .sub{ font-weight:700; font-size:13px; color:#3b3b3b; margin-top:2px; }
+
+        .auth{ display:flex; align-items:center; gap:10px; color:#333; font-weight:600; }
+        .auth a{ display:flex; align-items:center; gap:6px; padding:8px 10px; border-radius:8px; }
+        .auth a:hover{ background:#f3f4f6; }
+        .auth .icon{ width:18px; height:18px; border-radius:50%; border:2px solid #111; display:inline-block; position:relative; }
+        .auth .icon:after{ content:""; position:absolute; left:50%; top:55%; transform:translate(-50%,-50%); width:8px; height:8px; border-radius:50%; background:#111; }
+
+        .gnb{ background:#fff; border-bottom:1px solid var(--line); }
+        .gnb-inner{
+            width:1020px; max-width:calc(100% - 32px);
+            margin:0 auto;
+            display:flex; align-items:center; gap:28px;
+            padding:12px 0 0;
+        }
+        .menu{ display:flex; align-items:center; gap:26px; font-weight:700; color:#111; }
+        .menu a{ display:inline-block; padding:12px 2px 14px; opacity:.9; }
+        .menu a:hover{ opacity:1; }
+        .menu a.active{ color:var(--primary); position:relative; opacity:1; }
+        .menu a.active:after{
+            content:""; position:absolute; left:0; right:0; bottom:6px;
+            height:3px; border-radius:3px; background:var(--primary);
+        }
+
+        .wrap{
+            width:1020px; max-width:calc(100% - 32px);
+            margin:18px auto 60px;
+        }
+        .section{
+            background:var(--card);
+            border:1px solid var(--line);
+            border-radius:12px;
+            padding:22px;
+        }
+        .title-row{
+            display:flex; align-items:center; justify-content:space-between; gap:10px;
+            margin-bottom:14px;
+        }
+        .title{
+            margin:0;
+            font-size:22px;
+            font-weight:900;
+            letter-spacing:-0.4px;
+        }
+        .subtitle{
+            margin-top:6px;
+            color:#7a8088;
+            font-weight:700;
+            font-size:13px;
+        }
+
+        .form{
+            display:flex;
+            flex-direction:column;
+            gap:14px;
+            margin-top:14px;
+        }
+        .field label{
+            display:block;
+            font-weight:900;
+            font-size:13px;
+            color:#2b2f36;
+            margin-bottom:8px;
+        }
+        .input, .textarea{
+            width:100%;
+            border:1px solid var(--line);
+            border-radius:12px;
+            padding:12px 12px;
+            font-size:14px;
+            background:#fff;
+            outline:none;
+        }
+        .input:focus, .textarea:focus{
+            border-color:#cfeaff;
+            box-shadow:0 0 0 3px rgba(45,168,255,.12);
+        }
+        .textarea{
+            min-height:140px;
+            resize:vertical;
+            line-height:1.6;
+        }
+        .grid{
+            display:grid;
+            grid-template-columns: 1fr 1fr;
+            gap:14px;
+        }
+        @media (max-width: 760px){
+            .grid{ grid-template-columns:1fr; }
+        }
+
+        .btn-row{
+            display:flex;
+            justify-content:flex-end;
+            gap:10px;
+            margin-top:6px;
+        }
+        .btn{
+            padding:10px 12px;
+            border:1px solid var(--line);
+            border-radius:10px;
+            background:#fff;
+            cursor:pointer;
+            font-weight:900;
+        }
+        .btn:hover{ background:#fafbfc; }
+        .btn.primary{
+            border-color:#cfeaff;
+            background:#e9f6ff;
+            color:var(--primary);
+        }
+    </style>
 </head>
-<body style="font-family:Arial; padding:18px 24px;">
-<h2>지원서 수정</h2>
+<body>
 
-<form action="${pageContext.request.contextPath}/application/update" method="post">
-    <input type="hidden" name="id" value="${app.id}"/>
-    <input type="hidden" name="recruitId" value="${app.recruitId}"/>
+<div class="header">
+    <div class="header-inner">
+        <div class="brand" onclick="location.href='${pageContext.request.contextPath}/home'">
+            <div class="logo"></div>
+            <div class="brand-text">
+                <div>ClubList</div>
+                <div class="sub">캠퍼스 동아리 모집</div>
+            </div>
+        </div>
+        <div class="auth">
+            <a href="#" title="로그인"><span class="icon"></span>로그인</a>
+        </div>
+    </div>
+</div>
 
-    이름: <input name="name" value="${app.name}" required/><br/><br/>
-    학년: <input name="grade" type="number" value="${app.grade}"/><br/><br/>
-    전공: <input name="major" value="${app.major}"/><br/><br/>
-    내용:<br/>
-    <textarea name="message" rows="6" cols="60">${app.message}</textarea><br/><br/>
+<div class="gnb">
+    <div class="gnb-inner">
+        <nav class="menu">
+            <a class="active" href="#">동아리</a>
+            <a href="#">대외활동</a>
+            <a href="#">공모전</a>
+            <a href="#">취업정보</a>
+            <a href="#">스터디</a>
+            <a href="#">이벤트</a>
+            <a href="#">게시요청</a>
+            <a href="#">EDU</a>
+        </nav>
+    </div>
+</div>
 
-    <button type="submit">수정 저장</button>
-    <button type="button" onclick="history.back()">취소</button>
-</form>
+<div class="wrap">
+    <div class="section">
+        <div class="title-row">
+            <div>
+                <h1 class="title">지원서 작성</h1>
+                <div class="subtitle">필수 항목을 입력하고 지원서를 제출하세요.</div>
+            </div>
+            <button class="btn" type="button" onclick="history.back()">← 돌아가기</button>
+        </div>
+
+        <form class="form" action="${pageContext.request.contextPath}/application/create" method="post">
+            <input type="hidden" name="recruitId" value="${recruitId}"/>
+
+            <div class="field">
+                <label>이름</label>
+                <input class="input" name="name" required placeholder="이름을 입력하세요"/>
+            </div>
+
+            <div class="grid">
+                <div class="field">
+                    <label>학년</label>
+                    <input class="input" name="grade" type="number" min="1" max="6" placeholder="예) 2"/>
+                </div>
+                <div class="field">
+                    <label>전공</label>
+                    <input class="input" name="major" placeholder="예) 컴퓨터공학"/>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>내용</label>
+                <textarea class="textarea" name="message" placeholder="지원 동기 / 간단한 소개 등을 작성해 주세요."></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn" type="button" onclick="history.back()">취소</button>
+                <button class="btn primary" type="submit">저장</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 </body>
 </html>

@@ -251,6 +251,21 @@
             color:#4b6b88;
             font-weight:800;
         }
+        .dchip {
+            margin-left: 8px;
+            padding: 4px 8px;
+            font-size: 13px;
+            border-radius: 12px;
+            background: #e6f2ff;
+            color: #1e6fff;
+            font-weight: 600;
+        }
+
+        .dchip.end {
+            background: #f2f2f2;
+            color: #999;
+        }
+
     </style>
 
     <script>
@@ -322,6 +337,15 @@
             <div class="club-badge">CL</div>
             <div style="flex:1;">
                 <h1 class="club-title">${recruit.title}</h1>
+                <c:choose>
+                    <c:when test="${dday >= 0}">
+                        <span class="dchip">D-${dday}</span>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="dchip end">마감</span>
+                    </c:otherwise>
+                </c:choose>
+
                 <div class="club-sub">
                     <span class="like">
                         <svg class="heart" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -358,9 +382,19 @@
         <!-- 모집 공고 패널 -->
         <div id="panel-notice" class="tab-content tab-panel">
             <div class="period">
-                <span style="font-weight:900;">모집 기간</span>
-                <span class="dchip">D-7</span>
-                <span style="color:#444; font-weight:700;">10월 1일(수) ~ 12월 21일(일)</span>
+                <span style="font-weight:900;">모집 상태</span>
+
+                <c:choose>
+                    <c:when test="${recruit.deadline == null}">
+                        <span class="dchip">상시모집</span>
+                    </c:when>
+                    <c:when test="${dday >= 0}">
+                        <span class="dchip">D-${dday}</span>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="dchip end">마감</span>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
             <div class="card">

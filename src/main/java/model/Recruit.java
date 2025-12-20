@@ -1,13 +1,16 @@
 package model;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 public class Recruit {
+
     private int id;
     private String title;
     private String description;
     private String category;
     private Timestamp createdAt;
+    private LocalDate deadline;   // ⭐ 추가
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -23,4 +26,7 @@ public class Recruit {
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
+    public LocalDate getDeadline() { return deadline; }
+    public void setDeadline(LocalDate deadline) { this.deadline = deadline; }
 }

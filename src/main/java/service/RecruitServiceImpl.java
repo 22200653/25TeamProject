@@ -20,6 +20,14 @@ public class RecruitServiceImpl implements RecruitService {
     }
 
     @Override
+    public List<Recruit> list(String category) {
+        if (category == null || category.trim().isEmpty() || "전체".equals(category)) {
+            return repo.findAll();
+        }
+        return repo.findByCategory(category);
+    }
+
+    @Override
     public Recruit detail(int id) {
         return repo.findById(id);
     }

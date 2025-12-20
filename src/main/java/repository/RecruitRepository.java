@@ -18,6 +18,11 @@ public class RecruitRepository {
         return mapper.findAll();
     }
 
+    // ✅ 추가
+    public List<Recruit> findByCategory(String category) {
+        return mapper.findByCategory(category);
+    }
+
     public Recruit findById(int id) {
         return mapper.findById(id);
     }

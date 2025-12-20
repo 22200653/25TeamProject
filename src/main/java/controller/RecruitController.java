@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import service.ApplicationService;
 import service.RecruitService;
+import model.Recruit;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Controller
 @RequestMapping("/recruit")
@@ -22,8 +26,23 @@ public class RecruitController {
 
     @GetMapping("/detail")
     public String detail(@RequestParam("id") int id, Model model) {
-        model.addAttribute("recruit", recruitService.detail(id));
+
+        // 1️⃣ 모집글 조회
+        Recruit recruit = recruitService.detail(id);
+        model.addAttribute("recruit", recruit);
+
+        // 2️⃣ 지원서 목록
         model.addAttribute("apps", applicationService.listByRecruitId(id));
+
+        // 3️⃣ D-day 계산 (⭐ 핵심 ⭐)
+        long dday = -1; // 기본값: 마감
+        if (recruit != null && recruit.getDeadline() != null) {
+            LocalDate today = LocalDate.now();
+            dday = ChronoUnit.DAYS.between(today, recruit.getDeadline());
+        }
+
+        model.addAttribute("dday", dday);
+
         return "recruit/detail";
     }
 }

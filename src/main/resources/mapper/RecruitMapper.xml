@@ -6,13 +6,21 @@
 <mapper namespace="mapper.RecruitMapper">
 
     <select id="findAll" resultType="Recruit">
-        SELECT id, title, description, category, created_at
+        SELECT id, title, description, category, deadline, created_at
         FROM recruit
         ORDER BY id DESC
     </select>
 
+    <!-- ✅ 추가: category로 필터링 -->
+    <select id="findByCategory" parameterType="string" resultType="Recruit">
+        SELECT id, title, description, category, deadline, created_at
+        FROM recruit
+        WHERE category = #{category}
+        ORDER BY id DESC
+    </select>
+
     <select id="findById" parameterType="int" resultType="Recruit">
-        SELECT id, title, description, category, created_at
+        SELECT id, title, description, category, deadline, created_at
         FROM recruit
         WHERE id = #{id}
     </select>
