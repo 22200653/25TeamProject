@@ -13,12 +13,13 @@
         grade,
         major,
         message,
+        file_name AS fileName,
+        file_path AS filePath,
         created_at AS createdAt
         FROM application
         WHERE recruit_id = #{recruitId}
         ORDER BY id DESC
     </select>
-
 
     <select id="findById" parameterType="int" resultType="model.Application">
         SELECT
@@ -28,15 +29,16 @@
         grade,
         major,
         message,
+        file_name AS fileName,
+        file_path AS filePath,
         created_at AS createdAt
         FROM application
         WHERE id = #{id}
     </select>
 
-
     <insert id="insert" parameterType="Application" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO application (recruit_id, name, grade, major, message)
-        VALUES (#{recruitId}, #{name}, #{grade}, #{major}, #{message})
+        INSERT INTO application (recruit_id, name, grade, major, message, file_name, file_path)
+        VALUES (#{recruitId}, #{name}, #{grade}, #{major}, #{message}, #{fileName}, #{filePath})
     </insert>
 
     <update id="update" parameterType="Application">
@@ -44,7 +46,9 @@
         SET name = #{name},
         grade = #{grade},
         major = #{major},
-        message = #{message}
+        message = #{message},
+        file_name = #{fileName},
+        file_path = #{filePath}
         WHERE id = #{id}
     </update>
 

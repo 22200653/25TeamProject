@@ -5,24 +5,125 @@
 
 <mapper namespace="mapper.RecruitMapper">
 
+    <!-- 공통 컬럼 -->
+    <sql id="recruitCols">
+        id,
+        title,
+        description,
+        category,
+        deadline,
+        created_at,
+        image_url AS imageUrl,
+        view_count AS viewCount,
+        like_count AS likeCount
+    </sql>
+
+    <!-- 전체 -->
     <select id="findAll" resultType="Recruit">
-        SELECT id, title, description, category, deadline, created_at
+        SELECT <include refid="recruitCols"/>
         FROM recruit
         ORDER BY id DESC
     </select>
 
-    <!-- ✅ 추가: category로 필터링 -->
+    <!-- 카테고리 -->
     <select id="findByCategory" parameterType="string" resultType="Recruit">
-        SELECT id, title, description, category, deadline, created_at
+        SELECT <include refid="recruitCols"/>
         FROM recruit
         WHERE category = #{category}
         ORDER BY id DESC
     </select>
 
+    <!-- 검색(제목 포함) -->
+    <select id="findBySearch" parameterType="string" resultType="Recruit">
+        SELECT <include refid="recruitCols"/>
+        FROM recruit
+        WHERE title LIKE CONCAT('%', #{q}, '%')
+        ORDER BY id DESC
+    </select>
+
+    <!-- 카테고리 + 검색 -->
+    <select id="findByCategoryAndSearch" resultType="Recruit">
+        SELECT <include refid="recruitCols"/>
+        FROM recruit
+        WHERE category = #{category}
+        AND title LIKE CONCAT('%', #{q}, '%')
+        ORDER BY id DESC
+    </select>
+
+    <!-- 상세 -->
     <select id="findById" parameterType="int" resultType="Recruit">
-        SELECT id, title, description, category, deadline, created_at
+        SELECT <include refid="recruitCols"/>
         FROM recruit
         WHERE id = #{id}
     </select>
+
+    <!-- 랭킹 Top3 (좋아요 수 기준) -->
+    <select id="findTop3ByLikes" resultType="Recruit">
+        SELECT <include refid="recruitCols"/>
+        FROM recruit
+        ORDER BY like_count DESC, id DESC
+        LIMIT 3
+    </select>
+
+    <!-- 조회수 증가 -->
+    <update id="increaseViewCount">
+        UPDATE recruit
+        SET view_count = view_count + 1
+        WHERE id = #{id}
+    </update>
+
+    <!-- 좋아요 존재 여부 -->
+    <select id="existsLike" resultType="int">
+        SELECT COUNT(*)
+        FROM recruit_like
+        WHERE recruit_id = #{recruitId}
+        AND member_id = #{memberId}
+    </select>
+
+    <!-- 좋아요 insert -->
+    <insert id="insertLike">
+        INSERT INTO recruit_like (recruit_id, member_id)
+        VALUES (#{recruitId}, #{memberId})
+    </insert>
+
+    <!-- 좋아요 delete -->
+    <delete id="deleteLike">
+        DELETE FROM recruit_like
+        WHERE recruit_id = #{recruitId}
+        AND member_id = #{memberId}
+    </delete>
+
+    <!-- recruit like_count +1 / -1 -->
+    <update id="increaseLikeCount">
+        UPDATE recruit
+        SET like_count = like_count + 1
+        WHERE id = #{recruitId}
+    </update>
+
+    <update id="decreaseLikeCount">
+        UPDATE recruit
+        SET like_count = CASE WHEN like_count > 0 THEN like_count - 1 ELSE 0 END
+        WHERE id = #{recruitId}
+    </update>
+
+    <!-- 관리자 CRUD -->
+    <insert id="insertRecruit" parameterType="Recruit" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO recruit (title, description, category, deadline, image_url)
+        VALUES (#{title}, #{description}, #{category}, #{deadline}, #{imageUrl})
+    </insert>
+
+    <update id="updateRecruit" parameterType="Recruit">
+        UPDATE recruit
+        SET title = #{title},
+        description = #{description},
+        category = #{category},
+        deadline = #{deadline},
+        image_url = #{imageUrl}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteRecruit" parameterType="int">
+        DELETE FROM recruit WHERE id = #{id}
+    </delete>
 
 </mapper>

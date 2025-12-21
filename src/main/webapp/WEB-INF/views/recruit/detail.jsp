@@ -112,6 +112,10 @@
             background: linear-gradient(135deg, #ffffff, #f3f7ff);
             display:flex; align-items:center; justify-content:center;
             font-weight:900;
+            overflow:hidden;
+        }
+        .club-badge img{
+            width:100%; height:100%; object-fit:cover; display:block;
         }
         .club-title{
             font-size:28px;
@@ -125,9 +129,17 @@
             color:#9aa3ad;
             font-weight:700;
             font-size:13px;
+            flex-wrap:wrap;
+        }
+
+        .like-btn{
+            border:0;
+            background:transparent;
+            cursor:pointer;
+            padding:0;
         }
         .like{
-            display:flex; align-items:center; gap:6px;
+            display:inline-flex; align-items:center; gap:6px;
             color:#ff5a73;
             font-weight:900;
         }
@@ -191,6 +203,7 @@
             border:1px solid var(--line);
             border-radius:12px;
             background:#fff;
+            flex-wrap:wrap;
         }
         .dchip{
             background: var(--primary-soft);
@@ -198,6 +211,10 @@
             font-weight:900;
             padding: 6px 10px;
             border-radius:999px;
+        }
+        .dchip.end {
+            background: #f2f2f2;
+            color: #999;
         }
 
         /* ====== 버튼 ====== */
@@ -234,42 +251,16 @@
         .actions{ display:flex; gap:8px; }
         .actions form{ margin:0; }
 
-        /* 지원서 탭 내 상단 바 */
-        .topbar{
-            display:flex;
-            justify-content:space-between;
+        .meta-pill{
+            display:inline-flex;
+            gap:8px;
             align-items:center;
-            gap:10px;
-        }
-
-        /* 댓글(미구현) 안내 */
-        .notice{
-            padding:14px 16px;
-            border:1px dashed #cfeaff;
-            border-radius:12px;
-            background:#f6fbff;
-            color:#4b6b88;
+            color:#7a8088;
             font-weight:800;
         }
-        .dchip {
-            margin-left: 8px;
-            padding: 4px 8px;
-            font-size: 13px;
-            border-radius: 12px;
-            background: #e6f2ff;
-            color: #1e6fff;
-            font-weight: 600;
-        }
-
-        .dchip.end {
-            background: #f2f2f2;
-            color: #999;
-        }
-
     </style>
 
     <script>
-        // ✅ "탭 눌렀는데 다 사라짐" 방지용: 안전한 토글
         function activateTab(btn){
             const target = btn.getAttribute("data-target");
             const allBtns = document.querySelectorAll(".tab-btn");
@@ -284,7 +275,6 @@
             if(panel){
                 panel.classList.remove("hidden");
             } else {
-                // 혹시 id가 틀려도 전체가 사라지지 않게 첫 패널을 보여줌
                 if(allPanels.length > 0) allPanels[0].classList.remove("hidden");
             }
         }
@@ -297,18 +287,44 @@
 </head>
 <body>
 
+<c:set var="loginUser" value="${sessionScope.loginUser}" />
+
 <!-- 헤더 -->
 <div class="header">
     <div class="header-inner">
-        <div class="brand" onclick="location.href='${pageContext.request.contextPath}/home'" style="cursor:pointer;">
+        <div class="brand" style="cursor:pointer;" onclick="location.href='${pageContext.request.contextPath}/home'">
             <div class="logo"></div>
             <div class="brand-text">
                 <div>ClubList</div>
                 <div class="sub">캠퍼스 동아리 모집</div>
             </div>
         </div>
+
         <div class="auth">
-            <a href="#" title="로그인"><span class="icon"></span>로그인</a>
+            <c:choose>
+                <c:when test="${not empty sessionScope.loginUser}">
+          <span style="font-weight:900;">
+            <c:out value="${sessionScope.loginUser.username}"/>님
+          </span>
+
+                    <c:if test="${sessionScope.loginUser.role eq 'ADMIN'}">
+                        <a href="${pageContext.request.contextPath}/admin/recruit/list" title="관리자">
+                            관리자
+                        </a>
+                    </c:if>
+
+                    <a href="${pageContext.request.contextPath}/auth/logout" title="로그아웃">
+                        로그아웃
+                    </a>
+                </c:when>
+
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/auth/login" title="로그인">
+                        <span class="icon"></span>
+                        로그인
+                    </a>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </div>
@@ -334,27 +350,63 @@
     <!-- 상단 요약 -->
     <div class="section">
         <div class="club-head">
-            <div class="club-badge">CL</div>
-            <div style="flex:1;">
-                <h1 class="club-title">${recruit.title}</h1>
+            <div class="club-badge">
                 <c:choose>
-                    <c:when test="${dday >= 0}">
-                        <span class="dchip">D-${dday}</span>
+                    <c:when test="${not empty recruit.imageUrl}">
+                        <img src="${recruit.imageUrl}" alt="club"/>
                     </c:when>
                     <c:otherwise>
-                        <span class="dchip end">마감</span>
+                        CL
                     </c:otherwise>
                 </c:choose>
+            </div>
+
+            <div style="flex:1;">
+                <h1 class="club-title"><c:out value="${recruit.title}"/></h1>
+
+                <!-- D-day + 마감일 -->
+                <div style="margin-top:6px;">
+                    <c:choose>
+                        <c:when test="${dday >= 0}">
+                            <span class="dchip">D-${dday}</span>
+                        </c:when>
+                        <c:otherwise>
+                            <span class="dchip end">마감</span>
+                        </c:otherwise>
+                    </c:choose>
+
+                    <c:if test="${recruit.deadline != null}">
+                        <span class="meta-pill" style="margin-left:10px;">
+                            마감일: ${recruit.deadline}
+                        </span>
+                    </c:if>
+                </div>
 
                 <div class="club-sub">
-                    <span class="like">
-                        <svg class="heart" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path d="M12 21s-7.2-4.6-9.6-9C.9 8.8 3 6 6.3 6c1.8 0 3 .9 3.7 1.8C10.7 6.9 12 6 13.7 6 17 6 19.1 8.8 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/>
-                        </svg>
-                        <span>1</span>
-                    </span>
+                    <!-- 좋아요 토글 -->
+                    <form action="${pageContext.request.contextPath}/recruit/like" method="post" style="margin:0;">
+                        <input type="hidden" name="recruitId" value="${recruit.id}"/>
+                        <button class="like-btn" type="submit" title="좋아요">
+                            <span class="like" style="${liked ? '' : 'opacity:.75;'}">
+                                <svg class="heart" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M12 21s-7.2-4.6-9.6-9C.9 8.8 3 6 6.3 6c1.8 0 3 .9 3.7 1.8C10.7 6.9 12 6 13.7 6 17 6 19.1 8.8 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/>
+                                </svg>
+                                <span>${recruit.likeCount}</span>
+                            </span>
+                        </button>
+                    </form>
+
                     <span>·</span>
-                    <span style="font-weight:900; color:#9aa3ad;">${recruit.category}</span>
+                    <span style="font-weight:900; color:#9aa3ad;"><c:out value="${recruit.category}"/></span>
+
+                    <span>·</span>
+                    <span class="meta-pill">조회수 ${recruit.viewCount}</span>
+
+                    <!-- 관리자 버튼 자리(경로는 추후 네 admin CRUD 만들면서 연결) -->
+                    <c:if test="${not empty loginUser && loginUser.role eq 'ADMIN'}">
+                        <span>·</span>
+                        <span class="meta-pill" style="color:#2da8ff;">관리자 모드</span>
+                    </c:if>
                 </div>
             </div>
 
@@ -367,15 +419,14 @@
         <div class="tab-row">
             <div class="tab-btn active" data-target="panel-notice" onclick="activateTab(this)">모집 공고</div>
 
-            <!-- size() 쓰지 말고 안전하게 0/표시 -->
             <div class="tab-btn" data-target="panel-apply" onclick="activateTab(this)">
                 지원서
                 <span style="color:#ffb020; font-weight:900; margin-left:6px;">
-        <c:choose>
-            <c:when test="${empty apps}">0</c:when>
-            <c:otherwise>${apps.size()}</c:otherwise>
-        </c:choose>
-      </span>
+                    <c:choose>
+                        <c:when test="${empty apps}">0</c:when>
+                        <c:otherwise>${apps.size()}</c:otherwise>
+                    </c:choose>
+                </span>
             </div>
         </div>
 
@@ -395,14 +446,18 @@
                         <span class="dchip end">마감</span>
                     </c:otherwise>
                 </c:choose>
+
+                <c:if test="${recruit.deadline != null}">
+                    <span style="color:#7a8088; font-weight:900;">
+                        마감일: ${recruit.deadline}
+                    </span>
+                </c:if>
             </div>
 
             <div class="card">
                 <h3>모집 공고</h3>
-                <div class="p">${recruit.description}</div>
+                <div class="p"><c:out value="${recruit.description}"/></div>
             </div>
-
-            <!-- ✅ 동아리 소개 탭/칸 제거: 필요하면 description 안에 포함되므로 별도 블록도 제거 -->
         </div>
 
         <!-- 지원서 패널 -->
@@ -432,11 +487,11 @@
                             <td>${a.id}</td>
                             <td>
                                 <a href="${pageContext.request.contextPath}/application/view?id=${a.id}" style="font-weight:900;">
-                                        ${a.name}
+                                    <c:out value="${a.name}"/>
                                 </a>
                             </td>
                             <td>${a.grade}</td>
-                            <td>${a.major}</td>
+                            <td><c:out value="${a.major}"/></td>
                             <td>
                                 <div class="actions">
                                     <button class="btn"
@@ -466,7 +521,6 @@
             </div>
         </div>
     </div>
-
 
 </div>
 

@@ -10,7 +10,11 @@ public class Recruit {
     private String description;
     private String category;
     private Timestamp createdAt;
-    private LocalDate deadline;   // ⭐ 추가
+    private LocalDate deadline;
+
+    private String imageUrl;
+    private int viewCount;
+    private int likeCount;
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -29,4 +33,13 @@ public class Recruit {
 
     public LocalDate getDeadline() { return deadline; }
     public void setDeadline(LocalDate deadline) { this.deadline = deadline; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public int getViewCount() { return viewCount; }
+    public void setViewCount(int viewCount) { this.viewCount = viewCount; }
+
+    public int getLikeCount() { return likeCount; }
+    public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
 }

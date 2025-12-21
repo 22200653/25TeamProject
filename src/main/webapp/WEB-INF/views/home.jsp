@@ -455,9 +455,11 @@
 <c:set var="currentCategory" value="${empty category ? '전체' : category}" />
 
 <!-- ====== 헤더(로고/로그인) ====== -->
+<c:set var="loginUser" value="${sessionScope.loginUser}" />
+
 <div class="header">
     <div class="header-inner">
-        <div class="brand">
+        <div class="brand" style="cursor:pointer;" onclick="location.href='${pageContext.request.contextPath}/home'">
             <div class="logo"></div>
             <div class="brand-text">
                 <div>ClubList</div>
@@ -466,13 +468,34 @@
         </div>
 
         <div class="auth">
-            <a href="#" title="로그인">
-                <span class="icon"></span>
-                로그인
-            </a>
+            <c:choose>
+                <c:when test="${not empty sessionScope.loginUser}">
+          <span style="font-weight:900;">
+            <c:out value="${sessionScope.loginUser.username}"/>님
+          </span>
+
+                    <c:if test="${sessionScope.loginUser.role eq 'ADMIN'}">
+                        <a href="${pageContext.request.contextPath}/admin/recruit/list" title="관리자">
+                            관리자
+                        </a>
+                    </c:if>
+
+                    <a href="${pageContext.request.contextPath}/auth/logout" title="로그아웃">
+                        로그아웃
+                    </a>
+                </c:when>
+
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/auth/login" title="로그인">
+                        <span class="icon"></span>
+                        로그인
+                    </a>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </div>
+
 
 <!-- ====== 메뉴(동아리 활성 표시) ====== -->
 <div class="gnb">
@@ -578,8 +601,7 @@
             <div class="badge">AD</div>
         </div>
     </div>
-
-    <!-- ====== 동아리 랭킹(1~3위) ====== -->
+    <!-- ====== 동아리 랭킹(1~3위) : 좋아요 Top3 ====== -->
     <div class="section">
         <div class="rank-head">
             <h2 class="section-title" style="margin:0;">동아리 랭킹</h2>
@@ -587,37 +609,44 @@
         </div>
 
         <div class="rank-list">
-            <c:forEach var="r" items="${recruits}" varStatus="st">
-                <c:if test="${st.index < 3}">
-                    <div class="rank-item">
-                        <div class="rank-left">
-                            <div class="rank-no"><c:out value="${st.index + 1}"/></div>
-                            <div class="rank-info">
-                                <div class="name">
-                                    <c:out value="${r.title}"/>
-                                    <span style="font-size:12px; color:#9aa3ad; font-weight:800; margin-left:8px;">
-                                        <c:out value="${r.category}"/>
-                                    </span>
-                                </div>
-                                <div class="desc">
-                                    <c:out value="${r.description}"/>
-                                </div>
+            <c:forEach var="r" items="${top3}" varStatus="st">
+                <div class="rank-item">
+                    <div class="rank-left">
+                        <div class="rank-no"><c:out value="${st.index + 1}"/></div>
+
+                        <div class="rank-info">
+                            <div class="name">
+                                <c:out value="${r.title}"/>
+                                <span style="font-size:12px; color:#9aa3ad; font-weight:800; margin-left:8px;">
+                                <c:out value="${r.category}"/>
+                            </span>
+
+                                <!-- ✅ 좋아요 수 표시 -->
+                                <span style="margin-left:10px; font-size:12px; color:#ff5a73; font-weight:900;">
+                                ♥ <c:out value="${r.likeCount}"/>
+                            </span>
+                            </div>
+
+                            <div class="desc">
+                                <c:out value="${r.description}"/>
                             </div>
                         </div>
-                        <div class="rank-logo">
-                            <c:out value="${st.index == 0 ? '1st' : (st.index == 1 ? '2nd' : '3rd')}"/>
-                        </div>
                     </div>
-                </c:if>
+
+                    <div class="rank-logo">
+                        <c:out value="${st.index == 0 ? '1st' : (st.index == 1 ? '2nd' : '3rd')}"/>
+                    </div>
+                </div>
             </c:forEach>
 
-            <c:if test="${empty recruits}">
+            <c:if test="${empty top3}">
                 <div style="padding:10px 6px; color:#7a8088; font-weight:800;">
                     랭킹을 표시할 모집글이 없어요.
                 </div>
             </c:if>
         </div>
     </div>
+
 
     <!-- ====== 동아리 모집글 리스트 ====== -->
     <div class="section">

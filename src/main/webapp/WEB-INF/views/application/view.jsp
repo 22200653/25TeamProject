@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -63,6 +64,7 @@
         }
         .k{ color:#7a8088; font-weight:900; }
         .v{ color:#111; font-weight:800; }
+
         .message{
             margin-top:14px;
             padding:16px;
@@ -79,6 +81,32 @@
             color:#50555c;
             font-weight:700;
         }
+
+        .filebox{
+            margin-top:14px;
+            padding:16px;
+            border:1px solid var(--line);
+            border-radius:12px;
+            background:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+        }
+        .file-left{ display:flex; flex-direction:column; gap:6px; }
+        .file-title{ font-weight:900; }
+        .file-name{ color:#50555c; font-weight:800; }
+        .file-btn{
+            padding:10px 12px;
+            border:1px solid #cfeaff;
+            border-radius:10px;
+            background:#e9f6ff;
+            color:var(--primary);
+            font-weight:900;
+            cursor:pointer;
+            white-space:nowrap;
+        }
+        .file-btn:hover{ filter:brightness(0.98); }
 
         .btn-row{
             display:flex;
@@ -109,8 +137,26 @@
                 <div class="sub">캠퍼스 동아리 모집</div>
             </div>
         </div>
+
         <div class="auth">
-            <a href="#" title="로그인"><span class="icon"></span>로그인</a>
+            <c:choose>
+                <c:when test="${not empty sessionScope.loginUser}">
+                    <span style="font-weight:900;">
+                        <c:out value="${sessionScope.loginUser.username}"/>님
+                    </span>
+
+                    <c:if test="${sessionScope.loginUser.role eq 'ADMIN'}">
+                        <a href="${pageContext.request.contextPath}/admin/recruit/list" title="관리자">관리자</a>
+                    </c:if>
+
+                    <a href="${pageContext.request.contextPath}/auth/logout" title="로그아웃">로그아웃</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/auth/login" title="로그인">
+                        <span class="icon"></span>로그인
+                    </a>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </div>
@@ -154,6 +200,22 @@
             <div class="label">내용</div>
             <pre>${app.message}</pre>
         </div>
+
+        <!-- ✅ 첨부파일 표시 + 다운로드 -->
+        <c:if test="${not empty app.filePath}">
+            <div class="filebox">
+                <div class="file-left">
+                    <div class="file-title">첨부파일</div>
+                    <div class="file-name">
+                        <c:out value="${app.fileName}"/>
+                    </div>
+                </div>
+                <a class="file-btn"
+                   href="${pageContext.request.contextPath}/application/file?id=${app.id}">
+                    다운로드
+                </a>
+            </div>
+        </c:if>
 
         <div class="btn-row">
             <button class="btn"
