@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import service.AdminRecruitService;
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/admin/recruit")
@@ -37,11 +38,22 @@ public class AdminRecruitController {
         return "admin/recruit/edit";
     }
 
+
     @PostMapping("/update")
-    public String update(@ModelAttribute Recruit recruit){
+    public String update(@ModelAttribute Recruit recruit,
+                         @RequestParam(value = "deadline", required = false) String deadlineStr) {
+
+        // deadline은 LocalDate 바인딩이 400의 주범이라 직접 처리
+        if (deadlineStr == null || deadlineStr.trim().isEmpty()) {
+            recruit.setDeadline(null);
+        } else {
+            recruit.setDeadline(LocalDate.parse(deadlineStr)); // yyyy-MM-dd
+        }
+
         adminRecruitService.updateRecruit(recruit);
         return "redirect:/admin/recruit/list";
     }
+
 
     @PostMapping("/delete")
     public String delete(@RequestParam("id") int id){
