@@ -530,24 +530,33 @@
     <div class="catbar-inner">
         <a class="tab ${currentCategory eq '전체' ? 'active' : ''}"
            href="${pageContext.request.contextPath}/home?category=전체">전체</a>
-        <a class="tab ${currentCategory eq '문화/예술/공연' ? 'active' : ''}"
-           href="${pageContext.request.contextPath}/home?category=문화/예술/공연">문화/예술/공연</a>
-        <a class="tab ${currentCategory eq '봉사/사회활동' ? 'active' : ''}"
-           href="${pageContext.request.contextPath}/home?category=봉사/사회활동">봉사/사회활동</a>
-        <a class="tab ${currentCategory eq '학술/교양' ? 'active' : ''}"
-           href="${pageContext.request.contextPath}/home?category=학술/교양">학술/교양</a>
-        <a class="tab ${currentCategory eq '창업/취업' ? 'active' : ''}"
-           href="${pageContext.request.contextPath}/home?category=창업/취업">창업/취업</a>
-        <a class="tab ${currentCategory eq '어학' ? 'active' : ''}"
-           href="${pageContext.request.contextPath}/home?category=어학">어학</a>
+
+        <a class="tab ${currentCategory eq '공연' ? 'active' : ''}"
+           href="${pageContext.request.contextPath}/home?category=공연">공연</a>
+
+        <a class="tab ${currentCategory eq '전산전자' ? 'active' : ''}"
+           href="${pageContext.request.contextPath}/home?category=전산전자">전산전자</a>
+
         <a class="tab ${currentCategory eq '체육' ? 'active' : ''}"
            href="${pageContext.request.contextPath}/home?category=체육">체육</a>
-        <a class="tab ${currentCategory eq '친목' ? 'active' : ''}"
-           href="${pageContext.request.contextPath}/home?category=친목">친목</a>
-        <a class="tab ${currentCategory eq '기타' ? 'active' : ''}"
-           href="${pageContext.request.contextPath}/home?category=기타">기타</a>
+
+        <a class="tab ${currentCategory eq '신앙' ? 'active' : ''}"
+           href="${pageContext.request.contextPath}/home?category=신앙">신앙</a>
+
+        <a class="tab ${currentCategory eq '봉사' ? 'active' : ''}"
+           href="${pageContext.request.contextPath}/home?category=봉사">봉사</a>
+
+        <a class="tab ${currentCategory eq '콘디' ? 'active' : ''}"
+           href="${pageContext.request.contextPath}/home?category=콘디">콘디</a>
+
+        <a class="tab ${currentCategory eq '컴케' ? 'active' : ''}"
+           href="${pageContext.request.contextPath}/home?category=컴케">컴케</a>
+
+        <a class="tab ${currentCategory eq '국제어문' ? 'active' : ''}"
+           href="${pageContext.request.contextPath}/home?category=국제어문">국제어문</a>
     </div>
 </div>
+
 
 <div class="wrap">
 
