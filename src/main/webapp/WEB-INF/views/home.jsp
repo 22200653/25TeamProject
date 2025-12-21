@@ -200,7 +200,7 @@
 
         .search button:hover { background: #d9f0ff; }
 
-        /* ====== 카테고리 탭(전체/문화/봉사...) ====== */
+        /* ====== 카테고리 탭 ====== */
         .catbar { background: #fff; border-bottom: 1px solid var(--line); }
 
         .catbar-inner {
@@ -292,6 +292,29 @@
             letter-spacing: -0.5px;
             color: #111;
             opacity: .85;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ✅ 이미지가 있을 때 포스터에 꽉 차게 표시 */
+        .poster .poster-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            z-index: 1;
+        }
+
+        /* ✅ 이미지 위에 글자 가독성(선택) */
+        .poster.has-img:after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.10), rgba(0,0,0,0.20));
+            z-index: 1;
+            pointer-events: none;
         }
 
         .p-title {
@@ -568,11 +591,20 @@
             <c:forEach var="r" items="${recruits}" varStatus="st">
                 <c:if test="${st.index < 5}">
                     <a class="p-card" href="${pageContext.request.contextPath}/recruit/detail?id=${r.id}">
-                        <div class="poster">
+                            <%-- ✅ imageUrl 있으면 이미지, 없으면 2글자 --%>
+                        <div class="poster ${not empty r.imageUrl ? 'has-img' : ''}">
+                            <c:if test="${not empty r.imageUrl}">
+                                <img class="poster-img"
+                                     src="${r.imageUrl}"
+                                     alt="${r.title}"
+                                     onerror="this.style.display='none'; this.closest('.poster').classList.remove('has-img');" />
+                            </c:if>
+
                             <div class="poster-text">
                                 <c:out value="${fn:length(r.title) >= 2 ? fn:substring(r.title,0,2) : r.title}"/>
                             </div>
                         </div>
+
                         <div class="p-title">
                             <c:out value="${r.title}"/>
                         </div>
@@ -610,6 +642,7 @@
             <div class="badge">AD</div>
         </div>
     </div>
+
     <!-- ====== 동아리 랭킹(1~3위) : 좋아요 Top3 ====== -->
     <div class="section">
         <div class="rank-head">

@@ -7,12 +7,35 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import service.AdminRecruitService;
 import java.time.LocalDate;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import java.beans.PropertyEditorSupport;
 
 @Controller
 @RequestMapping("/admin/recruit")
 public class AdminRecruitController {
 
     @Autowired private AdminRecruitService adminRecruitService;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) throws IllegalArgumentException {
+                if (text == null || text.trim().isEmpty()) {
+                    setValue(null);
+                } else {
+                    setValue(LocalDate.parse(text.trim())); // "yyyy-MM-dd"
+                }
+            }
+
+            @Override
+            public String getAsText() {
+                LocalDate value = (LocalDate) getValue();
+                return (value == null) ? "" : value.toString();
+            }
+        });
+    }
 
     @GetMapping("/list")
     public String list(Model model){
